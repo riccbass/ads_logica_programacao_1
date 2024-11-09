@@ -32,52 +32,58 @@ Não é necessário manter os dados lidos na memória após término do programa
 import sys #importo o sys para sair do código facilmente caso caia alguma validação com erro
 import random #random apara testar algus valoes
 
-dadosAleatorios = False 
-meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-qtdMeses = 12
+dadosAleatorios = False #feito apra usar dados aleatorios ao invés de input do usuario
+meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'] #usado para 
+#imprimir em tela o mês por extenso, não é necessário fazer uma lista mais complexa como [[Janeiro, 1], [Fevereiro, 2] ...] pois pegamos pela posição
+qtdMeses = 12 #meses no ano, usado para validar a lista meses, o range é fazer a média
 
-meses[11]
+tempMin = -60 #temp mínima aceita
+tempMax = 50 #tem máxima aceita
+tempEscaladante = 33 #parâmetro para dizer se o meses é escaldante
 
-tempMin = -60
-tempMax = 50
-tempEscaladante = 33
-
-if len(meses) != qtdMeses:
+if len(meses) != qtdMeses: #validação apra ver se não ficou algum mês sem separador, ex: 'Setemnbro' 'Outubro'...
     print('erro quantdade meses!')
     sys.exit()
 
-tempTot = 0
-qtdEscaldantes = 0
+tempTot = 0 #usado para calcular a temperatura média
+qtdEscaldantes = 0 #usado para contar os meses escaldantes
 
 tempMaisQuente = tempMin - 1 #é arriascado deixar como um valor fixo aqui, pq se todos os valores forem menores/mariores vai manter
 tempMaisFria = tempMax + 1 #é arriascado deixar como um valor fixo aqui, pq se todos os valores forem menores/mariores vai manter
 
-mesMaisQuente = 1
-mesMaisFrio = 1
+mesMaisQuente = 1 #mes mais quente, poderia ser 0 para ficar mais claro
+mesMaisFrio = 1 #mes mais frio, poderia ser 0 para ficar mais claro
 
-for mes in range(1, qtdMeses + 1):
+for mes in range(1, qtdMeses + 1): #início do laço, começa em 1 e vai até a qtdMeses + 1 pois o segundoa rgumento do range não é inclusivo ao contrário do primeiro
 
     if dadosAleatorios:
-        tempMes = random.randint(tempMin, tempMax)
+        #para não precisar o usuário digitar
+        tempMes = float(random.randint(tempMin, tempMax)) #poderia pegar o aleatório como float e só cortar alguns decimais para ficar 
+        #mais legível
     else:
-        tempMes = float(input(f'Digite a temperatura do mês {meses[mes - 1]}: ')) 
+        #para ser o usuário que digita, confrome pedido
+        tempMes = input(f'Digite a temperatura do mês {meses[mes - 1]}: ')
 
-    if tempMes > tempMax: tempMes = tempMax
-    if tempMes < tempMin: tempMes = tempMin
+        #teste para passar o decimal para o parâmetro brasileiro, vai aceitar o ponto tambem.e
+        tempMes = tempMes.replace(',','.')
+        tempMes = float(tempMes)
 
-    print(f'A temperatura de {meses[mes - 1]} é {tempMes}')
+    if tempMes > tempMax: tempMes = tempMax #teste da temperatura máxima
+    if tempMes < tempMin: tempMes = tempMin #teste da temperatua mínima
 
-    tempTot += tempMes
+    print(f'A temperatura de {meses[mes - 1]} é {tempMes}') #mostra na tela a temperatura digitada (já corrigida dos extremos)
 
-    if tempMes > tempEscaladante: qtdEscaldantes += 1
+    tempTot += tempMes #apoio para a temperatura média
+
+    if tempMes > tempEscaladante: qtdEscaldantes += 1 #apoio para a # de meses mto quentes
 
     if tempMes > tempMaisQuente: #maior ao invés de maior e igual faz com que o primeiro digitado seja o mais quente em caso de empate
-        tempMaisQuente = tempMes
-        mesMaisQuente = mes
+        tempMaisQuente = tempMes #clausura aninhada para preencher as duas variáveis
+        mesMaisQuente = mes #clausura aninhada para preencher as duas variáveis
 
     if tempMes < tempMaisFria: #menor ao invés de menor e igual faz com que o primeiro digitado seja o mais frio em caso de empate
-        tempMaisFria = tempMes
-        mesMaisFrio = mes
+        tempMaisFria = tempMes #clausura aninhada para preencher as duas variáveis
+        mesMaisFrio = mes #clausura aninhada para preencher as duas variáveis
 
 #Temperatura média máxima anual: exibe a média das temperaturas máximas informadas.
 print(f'A temperatura média é {(tempTot / qtdMeses):.2f}') 
